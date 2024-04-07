@@ -1,5 +1,5 @@
 resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = var.vpc_cidr_block
   tags = merge(var.tags, {Name = var.env})
 }
 
@@ -15,7 +15,7 @@ resource "aws_subnet" "web" {
   count = length(var.web_subnet)
   vpc_id     = aws_vpc.main.id
   cidr_block = var.web_subnet[count.index]
-  tags = merge(var.tags, {Name = "web-subnet"})
+  tags = merge(var.tags, {Name = "web_subnet"})
   availability_zone = var.azs[count.index]
 }
 
@@ -137,7 +137,7 @@ resource "aws_vpc_peering_connection" "peer" {
   peer_owner_id = var.account_id
   peer_vpc_id   = var.default_vpc_id
   vpc_id        = aws_vpc.main.id
-  auto_accept   = true
+  auto_accept = true
   tags = merge(var.tags, {Name = "peer-for-${var.env}-vpc-to-default-vpc"})
 }
 
